@@ -15,6 +15,10 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 	return &UserService{Repo: repo}
 }
 
+func (s *UserService) GetUserByNationalID(ctx context.Context, nationalID string) (*model.User, error) {
+	return s.Repo.GetByNationalID(ctx, nationalID)
+}
+
 func (s *UserService) CreateUser(ctx context.Context, u *model.User) error {
 	// Check for duplicate national ID
 	existingUser, _ := s.Repo.GetByNationalID(ctx, u.NationalID)

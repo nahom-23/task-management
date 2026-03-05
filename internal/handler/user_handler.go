@@ -2,13 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	// "log"
 	"net/http"
 	"task-management/internal/model"
 	"task-management/internal/service"
-	// "strconv"
 
-	// "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 )
 
 type UserHandler struct {
@@ -18,6 +16,20 @@ type UserHandler struct {
 func NewUserHandler(svc *service.UserService) *UserHandler {
 	return &UserHandler{Service: svc}
 }
+func (h *UserHandler) GetUserByNationalID(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	nationalID := vars["national_id"]
+
+	user, err := h.Service.GetUserByNationalID(r.Context(), nationalID)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+}
+
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var u model.User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {

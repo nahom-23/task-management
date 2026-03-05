@@ -34,6 +34,7 @@ func main() {
 		w.Write([]byte("OK"))
 	}).Methods("GET")
 
+	r.HandleFunc("/users/{national_id}", userHandler.GetUserByNationalID).Methods("GET")
 	r.HandleFunc("/users", userHandler.CreateUser).Methods("POST")
 	
 	log.Println("Server running on :8080")
